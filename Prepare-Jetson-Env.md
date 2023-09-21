@@ -21,3 +21,27 @@ Acquire::http::Proxy "http://169.254.25.35:1081/";
 Acquire::https::Proxy "http://169.254.25.35:1081/";
 ```
 Then we can use apt to install software on jetson TX2 board.
+
+
+## Install `perf` from source
+We tried to install perf by apt but their isn't perf for jetson TX2's linux version (We can get the linux version with cmd `uname -r`).
+We need to build from linux source code.
+```shell
+wget https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/linux-4.4.38.tar.gz
+tar -xvf linux-4.4.38.tar.gz
+cd linux-4.4.38/tools/perf
+make -j4
+```
+If everthing is OK, then we can see `perf` in the folder.
+copy it the the system binary folder:
+
+```shell
+cp ./perf /usr/bin/
+```
+
+Then we can test whether `perf` works and list all the software and hardware events:
+
+```shell
+perf list
+```
+For more perf usage, go to [this](https://www.brendangregg.com/perf.html) website.
