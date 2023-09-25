@@ -1,13 +1,17 @@
 # Common commands in compilation process
-generate unoptimized IR
+generate unoptimized IR *.bc
 ```
 clang {cflags} -emit-llvm -c -O3 -Xclang -disable-llvm-optzns -o {IR}
+```
+from *.bc to human readable *.ll file
+```
+llvm-dis {*.bc} -o {*.ll}
 ```
 use opt to optimize IR
 ```
 opt {seq} {IR} -o {IR_opt}
 ```
-from optimized IR to obj (use -filetype=asm to generate asm)
+from optimized IR to obj *.o (use -filetype=asm to generate asm *.s)
 ```
 llc -O3 -filetype=obj {IR_opt} -o {obj}
 ```
