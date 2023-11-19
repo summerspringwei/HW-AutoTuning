@@ -24,6 +24,11 @@ Acquire::https::Proxy "http://169.254.25.35:1081/";
 Note that  `169.254.25.35` is the ip address of the ethernet which connects with jetson boards.
 Then we can use apt to install software on jetson TX2 board.
 
+### Set proxy for git
+```shell
+git config --global http.proxy  "http://169.254.25.35:1081/"
+nvidia@ubuntu:~$ git config --global https.proxy  "http://169.254.25.35:1081/"
+```
 
 ## Install `perf` from source
 We tried to install perf by apt but their isn't perf for jetson TX2's linux version (We can get the linux version with cmd `uname -r`).
