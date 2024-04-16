@@ -47,6 +47,7 @@ def convert_kb_to_mb(kb: str):
     else:
         return kb
 
+
 def get_latency_list(args_list):
     # Check for the empty args_list
     if args_list is None or len(args_list) == 0:
@@ -66,6 +67,7 @@ def get_latency_list(args_list):
     print(latency_list)
 
     return latency_list
+
 
 def draw_one_benchmark_cache(args_list, ax=None, marker='*'):
     latency_list = get_latency_list(args_list)

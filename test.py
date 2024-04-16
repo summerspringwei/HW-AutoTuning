@@ -2,6 +2,20 @@
 # from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import VarianceThreshold
 
+import matplotlib.pyplot as plt
+
+x_labels = [i for i in range(1, 5)]
+a = [0.4, 0.7, 0.9, 0.1]
+
+b = [x * 0.5 for x in a]
+
+fig, ax = plt.subplots()
+
+ax.scatter(x_labels, a)
+ax.scatter(x_labels, b)
+plt.savefig("test.png")
+
+
 # a = [[0.5, 37, 128],
 #      [1.0, 44, 1024],
 #      [0.1, 22, 512]]
