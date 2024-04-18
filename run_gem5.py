@@ -62,9 +62,10 @@ def run_gem5_simulation(l2_size="2MB",
 
 def main():
     args_list = []
-
-    for benchmark in all_benchmarks:
-        args_list.extend(create_cbench_issue_width_workload(benchmark, "20"))
+    for benchmark in ["office_stringsearch1", ]:
+        args_list.extend(create_cbench_cache_workload(benchmark, "20"))
+    # for benchmark in all_benchmarks:
+    #     args_list.extend(create_cbench_issue_width_workload(benchmark, "20"))
     # args_list.extend(create_cbench_cache_workload("security_sha", "20"))
     # args_list.extend(create_cbench_cache_workload("automotive_susan_e", "20"))
     # args_list.extend(create_cbench_cache_workload("automotive_susan_s", "20"))

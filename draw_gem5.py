@@ -2,7 +2,13 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from utils import create_cbench_cache_workload, create_cbench_issue_width_workload, all_benchmarks
+from utils import (
+    create_cbench_cache_workload,
+    create_cbench_issue_width_workload,
+    all_benchmarks,
+    get_dirname_by_params,
+    extract,
+    get_latency_list)
 
 import matplotlib.pylab as pylab
 
@@ -16,29 +22,6 @@ params = {
 }
 pylab.rcParams.update(params)
 
-cbench_dir = "/home/xiachunwei/Projects/ArmCBench/cBench_V1.1/"
-
-def get_dirname_by_params(l2_size, l1d_size, l1i_size, l2_assoc, l1d_assoc, l1i_assoc,
-            benchmark_name, dataset_name, issue_width=None):
-    if issue_width is not None:
-        output_dir = f"{benchmark_name}_dataset_{dataset_name}_l2_{l2_size}_l1d_{l1d_size}_l1i_{l1i_size}_l2_assoc_{l2_assoc}_l1d_assoc_{l1d_assoc}_l1i_assoc_{l1i_assoc}_issue_width_{issue_width}_m5out"
-    else:
-        output_dir = f"{benchmark_name}_dataset_{dataset_name}_l2_{l2_size}_l1d_{l1d_size}_l1i_{l1i_size}_l2_assoc_{l2_assoc}_l1d_assoc_{l1d_assoc}_l1i_assoc_{l1i_assoc}_m5out"
-    return os.path.join(cbench_dir, benchmark_name, "src_work", output_dir)
-
-
-def extract(output_dir):
-    stats_file = os.path.join(output_dir, "stats.txt")
-    if not (os.path.exists(stats_file)):
-        return None
-    with open(stats_file, "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            if "simSeconds" in line:
-                sim_seconds = line.split()[1]
-                return sim_seconds
-    return None
-
 
 def convert_kb_to_mb(kb: str):
     val = int(kb[:-2])
@@ -48,31 +31,12 @@ def convert_kb_to_mb(kb: str):
         return kb
 
 
-def get_latency_list(args_list):
-    # Check for the empty args_list
-    if args_list is None or len(args_list) == 0:
-        return None
-    latency_list = []
-    for args in args_list:
-        latency_list.append(extract(get_dirname_by_params(*args)))
-    # Check the latency list and filter out the invalid ones
-    for latency in latency_list:
-        if latency is None:
-            print(f"Invalide latency for args: {args_list}")
-            return None
-    print(latency_list)
-    baseline_latency = float(latency_list[3])
-    latency_list = baseline_latency / np.array(
-        [float(latency) for latency in latency_list])
-    print(latency_list)
-
-    return latency_list
-
 
 def draw_one_benchmark_cache(args_list, ax=None, marker='*'):
     latency_list = get_latency_list(args_list)
     if latency_list is None:
         return ax
+    print(args_list[0][-3], latency_list)
     cache_size_list = [convert_kb_to_mb(args[0]) for args in args_list]
     ax.plot(cache_size_list,
             latency_list,
