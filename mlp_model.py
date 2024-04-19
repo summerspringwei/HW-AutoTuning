@@ -32,7 +32,7 @@ import numpy as np  # type: ignore
 import torch  # type: ignore
 
 
-from mlogging import get_logger  # type: ignore
+from utils import get_logger  # type: ignore
 logger = get_logger("mlp_model")  # pylint: disable=invalid-name
 # pylint: disable=no-member,import-outside-toplevel
 logger.info("Start !")
