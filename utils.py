@@ -1,5 +1,8 @@
 import os
 import pickle
+import logging
+import sys
+from logging import Logger
 import numpy as np
 
 from program_record import ProgramRecord
@@ -150,3 +153,24 @@ def get_latency_list(args_list):
     # print(latency_list)
 
     return latency_list
+
+
+def get_logger(name: str, log_level = logging.INFO) -> Logger:
+    """Create or get a logger by its name. This is essentially a wrapper of python's native logger.
+
+    Parameters
+    ----------
+    name : str
+        The name of the logger.
+
+    Returns
+    -------
+    logger : Logger
+        The logger instance.
+    """
+    logger =  logging.getLogger(name)
+    logger.addHandler(logging.StreamHandler(sys.stdout))
+    logger.setLevel(log_level)
+    
+
+    return logger

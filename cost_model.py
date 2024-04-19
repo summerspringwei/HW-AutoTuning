@@ -19,7 +19,10 @@ def load_all_dataset():
     all_features_keys = set()
     all_perf_keys = set()
     for benchmark in all_benchmarks:
-        program_record_list, features_keys, perf_keys = load_dataset(f'{dataset_path}/{benchmark}.pkl')
+        file_path = f'{dataset_path}/{benchmark}.pkl'
+        if not os.path.exists(file_path):
+            continue
+        program_record_list, features_keys, perf_keys = load_dataset(file_path)
         all_program_record_list.extend(program_record_list)
         features_keys = preprocessing_features_keys(features_keys)
         all_features_keys.update(features_keys)
@@ -93,7 +96,7 @@ def draw_pred_results(y_pred, y_test, num_sampled=100):
     plt.savefig("pred-test.svg")
 
 
-def main():
+def cost_model_repression():
     normalized_features, normalized_speedup = preprocessing_features()
     print(normalized_features[:5, :30])
     print(normalized_speedup[:5, :30])
@@ -101,5 +104,81 @@ def main():
     draw_pred_results(y_pred, y_test)
 
 
+# def dump_features_keys():
+#     all_program_record_list, all_features_keys, all_perf_keys = load_all_dataset()
+#     all_features, all_speedup = [], []
+#     # 1. Get all features from all benchmarks
+#     print(all_features_keys)
+#     for program_record in all_program_record_list:
+#         all_features.append(program_record.get_features(all_features_keys))
+#         all_speedup.append([program_record.get_speedup(),]) # We need 2-D array
+#     # save to numpy file
+#     with open(os.path.join(dataset_path, 'cached_data.npy'), 'wb') as f:
+#         pickle.dump([("cbench", np.array(all_features), np.array(all_speedup)),], f)
+
+
+
+def dump_features_keys():
+    record_benchmark_list = []
+    all_program_record_list = []
+    all_features_keys = set()
+    all_perf_keys = set()
+    for benchmark in all_benchmarks:
+        file_path = f'{dataset_path}/{benchmark}.pkl'
+        if not os.path.exists(file_path):
+            continue
+        program_record_list, features_keys, perf_keys = load_dataset(file_path)
+        all_program_record_list.extend(program_record_list)
+        record_benchmark_list.extend([benchmark,] * len(program_record_list))
+        features_keys = preprocessing_features_keys(features_keys)
+        all_features_keys.update(features_keys)
+        all_perf_keys.update(perf_keys)
+    
+    # Convert set to list to make the features ordered
+    all_features_keys = sorted(list(all_features_keys))
+    all_perf_keys = sorted(list(all_perf_keys))
+
+    all_features, all_speedup = [], []
+    # 1. Get all features from all benchmarks
+    print(all_features_keys)
+    for program_record in all_program_record_list:
+        all_features.append(program_record.get_features(all_features_keys))
+        all_speedup.append(1.0 / program_record.get_speedup()) # Get cost rather than speed up
+    # 2. Normalize features
+    scaler = StandardScaler()
+    print(np.array(all_features)[:5, :30])
+    normalized_features = scaler.fit_transform(all_features)
+    # 3. Remove zero variance features
+    sel = VarianceThreshold()
+    normalized_features = sel.fit_transform(normalized_features)
+    print(normalized_features.shape)
+    # normalized_speedup = scaler.fit_transform(all_speedup)
+    normalized_speedup = np.array(all_speedup, dtype=np.float32)
+
+    # Dump features and speedup to numpy file
+    benchmark_features_dict = {benchmark:[] for benchmark in all_benchmarks}
+    benchmark_labels_dict = {benchmark:[] for benchmark in all_benchmarks}
+    for benchmark, feature, label in zip(record_benchmark_list, normalized_features, normalized_speedup):
+        benchmark_features_dict[benchmark].append(np.expand_dims(np.array(feature, dtype=np.float32), axis=0))
+        benchmark_labels_dict[benchmark].append(label)
+
+    cached_data = []
+    for benchmark, features in benchmark_features_dict.items():
+        cached_data.append((benchmark, features, benchmark_labels_dict[benchmark]))
+    with open(os.path.join(dataset_path, 'cached_data.pkl'), 'wb') as f:
+        pickle.dump(cached_data, f)
+
+
+def cost_model_rank():
+    from mlp_model import State, SegmentSumMLPConfig, SegmentSumMLPTrainer, TrainerConfig
+    model_config = SegmentSumMLPConfig(input_dim=198)
+    state = State(model_config)
+    state.load(dataset_path)
+    trainer = SegmentSumMLPTrainer(state=state, )
+    trainer.train_full()
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    dump_features_keys()
+    cost_model_rank()
