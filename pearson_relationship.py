@@ -17,7 +17,7 @@ params = {'legend.fontsize': 'x-large',
 pylab.rcParams.update(params)
 
 from program_record import ProgramRecord
-from utils import load_dataset, all_benchmarks, dataset_path
+from utils import load_one_benchmark_dataset, all_benchmarks, dataset_path
 
 '''
 From https://www.statstutor.ac.uk/resources/uploaded/pearsons.pdf
@@ -72,7 +72,7 @@ def compute_pearson_correlation(features, labels, feature_keys, threshold=0.2):
 
 
 def compute_pearson_correlation_for_benchmark(benchmark, threshold=0.2, labels=LabelType.SPEEDUP):
-    record_list, features_keys, perf_keys = load_dataset(f'{dataset_path}/{benchmark}.pkl')
+    record_list, features_keys, perf_keys = load_one_benchmark_dataset(f'{dataset_path}/{benchmark}.pkl')
     features, labels = preprocessing_features(record_list, labels=labels)
     important_features = compute_pearson_correlation(features, labels, features_keys, threshold)
     return important_features

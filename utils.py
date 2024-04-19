@@ -1,3 +1,5 @@
+"""Utility functions for the cBench benchmark cost model and software-hardware co-design."""
+
 import os
 import pickle
 import logging
@@ -53,7 +55,7 @@ def get_logger(name: str, log_level=logging.INFO) -> Logger:
 logger = get_logger("utils")
 
 
-def load_dataset(
+def load_one_benchmark_dataset(
         file_path: str) -> Tuple[List[ProgramRecord], Set[str], Set[str]]:
     """Load the dataset from the dataset file (pickle format).
 
