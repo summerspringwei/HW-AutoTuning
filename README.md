@@ -63,3 +63,26 @@ INFO - 2024-04-19 21:09:48,163 - mlp_model.py:730 - Average test loss: 1.304941,
 
 The top-1 score shows that the most performant ground truth result is around `0.88` of the predicted one. (The closer to 1, the better).
 
+
+## Software Hardware Co-Design
+
+### Compute the pearson correlation 
+
+We provide a framework to evaluate which compiler passes are important for the hardware performance counter as well as the end-to-end latency.
+
+For cache miss rate:
+```shell
+python3 ./pearson_relationship.py --label_type cache --threshold 0.2
+```
+
+Please see the figure `heatmap-Cache-Miss-Rate.png` in `images`:
+![heat-map-cache-miss](images/heatmap-Cache-Miss-Rate.png)
+
+For end-to-end latency:
+```shell
+python3 ./pearson_relationship.py --label_type speedup --threshold 0.4
+```
+Please see the figure `heatmap-Speedup.png` in `images`:
+![heat-map-speedup](images/heatmap-Speedup.png)
+
+You can increase the threshold to filter out compiler pass features.
