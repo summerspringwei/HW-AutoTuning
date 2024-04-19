@@ -86,7 +86,7 @@ def plot_validation_results(y_pred: np.ndarray,
 
     # Compute the pearson correlation coefficient between the prediction and the test
     y_pred = np.array(y_pred).reshape(len(y_pred), 1)
-    y_test = np.array(y_test).reshape(len(y_test), 1)
+    y_test = np.array(y_test).reshape(len(y_test))
     correlation_coefficient = r_regression(y_pred, y_test)
     print(
         f"correlation_coefficient between predict and ground_truth: {np.average(correlation_coefficient)}"
@@ -94,8 +94,8 @@ def plot_validation_results(y_pred: np.ndarray,
     plt.xlabel('Randomly Sampled Test Cases')
     plt.ylabel('(pred - test) Speedup Histogram')
     plt.title('cBench Speedup Prediction Error Distribution')
-    plt.savefig("regression-cost-model-validation.png")
-    plt.savefig("regression-cost-model-validation.svg")
+    plt.savefig("images/regression-cost-model-validation.png")
+    plt.savefig("images/regression-cost-model-validation.svg")
 
 
 def main():
