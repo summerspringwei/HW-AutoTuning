@@ -122,6 +122,7 @@ def prepare_cbench_cache_dataset(threshold=0.01, normalize=True):
 def xgboost_predict(X, y):
     # Split the data into training and testing sets
     X, y = sklearn.utils.shuffle(X, y, random_state=42)
+    print(len(X))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Create an instance of XGBClassifier

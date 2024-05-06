@@ -113,7 +113,7 @@ def main():
     benchmark_important_features = {}
     labels = LabelType.CACHE_MISS
     for benchmark in all_benchmarks:
-        important_features = compute_pearson_correlation_for_benchmark(benchmark, labels=labels, threshold=0.4)
+        important_features = compute_pearson_correlation_for_benchmark(benchmark, labels=labels, threshold=0.2)
         benchmark_important_features[benchmark] = important_features
         print(f"Important features for {benchmark}:")
         for feature, coef in important_features:
