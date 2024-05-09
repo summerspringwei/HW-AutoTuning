@@ -2,7 +2,6 @@ model.pkl
 cached_data.pkl
 tmp.txt
 test.py
-*.png
 *.svg
 # Byte-compiled / optimized / DLL files
 __pycache__/

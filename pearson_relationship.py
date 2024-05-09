@@ -174,8 +174,8 @@ def plot_heat_map_for_all_benchmark(
     ax.set_title(
         f'Pearson Correlations between features and {label_str} for cBench')
     plt.tight_layout()
-    plt.savefig(f'images/heatmap-{label_str}.png')
-    plt.savefig(f'images/heatmap-{label_str}.svg')
+    plt.savefig(f'figures/heatmap-{label_str}.png')
+    plt.savefig(f'figures/heatmap-{label_str}.svg')
 
 
 def main(label_type: str, threshold: float = 0.4) -> None:

@@ -94,8 +94,8 @@ def plot_validation_results(y_pred: np.ndarray,
     plt.xlabel('Randomly Sampled Test Cases')
     plt.ylabel('(pred - test) Speedup Histogram')
     plt.title('cBench Speedup Prediction Error Distribution')
-    plt.savefig("images/regression-cost-model-validation.png")
-    plt.savefig("images/regression-cost-model-validation.svg")
+    plt.savefig("figures/regression-cost-model-validation.png")
+    plt.savefig("figures/regression-cost-model-validation.svg")
 
 
 def main():

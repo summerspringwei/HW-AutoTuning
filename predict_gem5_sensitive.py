@@ -8,11 +8,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import xgboost as xgb
 
-
 from utils import (create_cbench_cache_workload,
                    create_cbench_issue_width_workload, all_benchmarks,
                    dataset_path, get_dirname_by_params, extract,
                    get_latency_list)
+
+""" Example of PMU data
 
 example_perf_O0 = {
     'branch-misses': 11557400,
@@ -43,9 +44,9 @@ exapmple_perf_O3 = {
     'branch-load-misses': 932571,
     'branch-loads': 185751104
 }
+"""
 
-
-def preprocessing_pmu(pmd_data: dict[str, int])-> List[int]:
+def preprocessing_pmu(pmd_data: Dict[str, int])-> List[int]:
     # return cache-miss-rate, branch-misses-rate, cpi, l1-dcache-load-miss-rate, l1-dcache-store-rate, branch-load-misses-rate
     cache_miss_rate = pmd_data['cache-misses'] / pmd_data['cache-references']
     branch_misses_rate = pmd_data['branch-misses'] / pmd_data['branch-loads']
@@ -57,20 +58,6 @@ def preprocessing_pmu(pmd_data: dict[str, int])-> List[int]:
 
     return pmu_feature
 
-
-# for benchmark in all_benchmarks:
-    # latency_list = get_latency_list(create_cbench_issue_width_workload(benchmark, "20"))
-    # if latency_list is not None:
-    #     round_list = [round(latency, 3) for latency in latency_list]
-    #     print(benchmark, round_list, round(np.var(latency_list[:3]), 3), np.var(latency_list[4:]))
-
-    # print("*"*50)
-    # latency_list = get_latency_list(
-    #     create_cbench_cache_workload(benchmark, "20"))
-    # if latency_list is not None:
-    #     round_list = [round(latency, 3) for latency in latency_list]
-    #     # print(benchmark, round_list, round(np.var(latency_list[:3]), 3), np.var(latency_list[4:]))
-    #     print(benchmark, round_list, round(np.var(latency_list), 2))
 
 
 def load_pmu_O0_O3(benchmark):
@@ -152,4 +139,4 @@ if __name__ == "__main__":
     for f, l in zip(features, labels):
         print(f, l)
     xgboost_predict(features, labels)
-    # print(feature_label)
+

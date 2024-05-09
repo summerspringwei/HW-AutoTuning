@@ -7,7 +7,7 @@ import sys
 import pathlib
 from logging import Logger
 import numpy as np
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, Dict
 
 from program_record import ProgramRecord
 
@@ -204,9 +204,9 @@ def create_cbench_cache_workload(benchmark_name, dataset_name) -> List[dict]:
     l2_size, l1_d_size, l1_i_size = 256, 4, 6
     for _ in range(7):
         args_list.append({
-            "l2_size": l2_size,
-            "l1_d_size": l1_d_size,
-            "l1_i_size": l1_i_size,
+            "l2_size": f"{l2_size}kB",
+            "l1_d_size": f"{l1_d_size}kB",
+            "l1_i_size": f"{l1_i_size}kB",
             "l2_assoc": 8,
             "l1_d_assoc": 4,
             "l1_i_assoc": 6,
@@ -215,19 +215,6 @@ def create_cbench_cache_workload(benchmark_name, dataset_name) -> List[dict]:
             "issue_width": issue_width
         })
         l2_size, l1_d_size, l1_i_size = l2_size * 2, l1_d_size * 2, l1_i_size * 2
-
-    return args_list
-
-
-def create_cbench_issue_width_workload(benchmark_name, dataset_name):
-    args_list = []
-    l2_size, l1_d_size, l1_i_size = 1024 * 4, 64, 96
-
-    for i in range(7):
-        issue_width = i + 1
-        args_list.append(
-            (f"{l2_size}kB", f"{l1_d_size}kB", f"{l1_i_size}kB", 8, 4, 6,
-             benchmark_name, str(dataset_name), issue_width))
 
     return args_list
 
@@ -254,9 +241,9 @@ def create_cbench_issue_width_workload(benchmark_name,
     for i in range(7):
         issue_width = i + 1
         args_list.append({
-            "l2_size": l2_size,
-            "l1_d_size": l1_d_size,
-            "l1_i_size": l1_i_size,
+            "l2_size": f"{l2_size}kB",
+            "l1_d_size": f"{l1_d_size}kB",
+            "l1_i_size": f"{l1_i_size}kB",
             "l2_assoc": 8,
             "l1_d_assoc": 4,
             "l1_i_assoc": 6,
@@ -269,11 +256,11 @@ def create_cbench_issue_width_workload(benchmark_name,
 
 
 def get_dirname_by_params(l2_size: int = 1024,
-                          l1d_size: int = 64,
-                          l1i_size: int = 96,
+                          l1_d_size: int = 64,
+                          l1_i_size: int = 96,
                           l2_assoc: int = 8,
-                          l1d_assoc: int = 4,
-                          l1i_assoc: int = 6,
+                          l1_d_assoc: int = 4,
+                          l1_i_assoc: int = 6,
                           benchmark_name: str = "automotive_bitcount",
                           dataset_name: str = "1",
                           issue_width: int = None):
@@ -304,9 +291,9 @@ def get_dirname_by_params(l2_size: int = 1024,
         The path to the output directory.
     """
     if issue_width is not None:
-        output_dir = f"{benchmark_name}_dataset_{dataset_name}_l2_{l2_size}_l1d_{l1d_size}_l1i_{l1i_size}_l2_assoc_{l2_assoc}_l1d_assoc_{l1d_assoc}_l1i_assoc_{l1i_assoc}_issue_width_{issue_width}_m5out"
+        output_dir = f"{benchmark_name}_dataset_{dataset_name}_l2_{l2_size}_l1d_{l1_d_size}_l1i_{l1_i_size}_l2_assoc_{l2_assoc}_l1d_assoc_{l1_d_assoc}_l1i_assoc_{l1_i_assoc}_issue_width_{issue_width}_m5out"
     else:
-        output_dir = f"{benchmark_name}_dataset_{dataset_name}_l2_{l2_size}_l1d_{l1d_size}_l1i_{l1i_size}_l2_assoc_{l2_assoc}_l1d_assoc_{l1d_assoc}_l1i_assoc_{l1i_assoc}_m5out"
+        output_dir = f"{benchmark_name}_dataset_{dataset_name}_l2_{l2_size}_l1d_{l1_d_size}_l1i_{l1_i_size}_l2_assoc_{l2_assoc}_l1d_assoc_{l1_d_assoc}_l1i_assoc_{l1_i_assoc}_m5out"
     out_dir = os.path.join(cbench_dir, benchmark_name, "src_work", output_dir)
     return out_dir
 
@@ -331,7 +318,7 @@ def extract_sim_seconds_from_stats(output_dir: str) -> float:
             if "simSeconds" in line:
                 sim_seconds = line.split()[1]
                 return float(sim_seconds)
-        return 0
+    return 0
 
 
 def get_latency_list(args_list: List[dict], baseline_index=3):
@@ -346,8 +333,14 @@ def get_latency_list(args_list: List[dict], baseline_index=3):
         raise ValueError("Empty args_list")
     latency_list = []
     for args in args_list:
-        latency_list.append(
-            extract_sim_seconds_from_stats(get_dirname_by_params(**args)))
+        file_path = get_dirname_by_params(**args)
+        if not os.path.exists(file_path):
+            return None
+        sim_latency = extract_sim_seconds_from_stats(file_path)
+        if sim_latency == 0:
+            logger.warn(f"Invalide latency for args: {args}")
+            return None
+        latency_list.append(sim_latency)
     # Check the latency list and filter out the invalid ones
     for latency in latency_list:
         if latency == 0:

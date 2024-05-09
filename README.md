@@ -33,7 +33,7 @@ correlation_coefficient between predict and ground_truth: 0.8567691020289628
 ```
 In the previous outputs, the average prediction error is around `0.20`.
 You can also check the distribution of prediction errors:
-![hist-pred-error](images/regression-cost-model-validation.png)
+![hist-pred-error](figures/regression-cost-model-validation.png)
 
 
 ### Ranking based model
@@ -75,14 +75,39 @@ For cache miss rate:
 python3 ./pearson_relationship.py --label_type cache --threshold 0.2
 ```
 
-Please see the figure `heatmap-Cache-Miss-Rate.png` in `images`:
-![heat-map-cache-miss](images/heatmap-Cache-Miss-Rate.png)
+Please see the figure `heatmap-Cache-Miss-Rate.png` in `figures`:
+![heat-map-cache-miss](figures/heatmap-Cache-Miss-Rate.png)
 
 For end-to-end latency:
 ```shell
 python3 ./pearson_relationship.py --label_type speedup --threshold 0.4
 ```
-Please see the figure `heatmap-Speedup.png` in `images`:
-![heat-map-speedup](images/heatmap-Speedup.png)
+Please see the figure `heatmap-Speedup.png` in `figures`:
+![heat-map-speedup](figures/gem5-cache-size.png)
 
 You can increase the threshold to filter out compiler pass features.
+
+
+### Run gem5 simulation
+
+We provide a framework to analyze how the micro architecture design choice will affect the final performance.
+```shell
+python3 run_gem5.py
+```
+Note, it may take several hours to even several days to run the simulation. The simulation time depends on the performance of the CPUs.
+
+
+### Visualize simulation results
+After collecting the simulation results for different architecture parameters,
+we can show the how the latency changes with the parameters for all the benchmarks.
+```shell
+python3 draw_gem5.py
+```
+We can get the latency vs the cache size:
+![gem5-cache-size-cbench](figures/gem5-issue-width.png)
+
+We can also get the latency vs issue-width :
+![gem5-issue-width-cbench](figures/gem5-issue-width.png)
+
+
+### Predict the 
