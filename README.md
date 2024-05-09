@@ -66,6 +66,8 @@ The top-1 score shows that the most performant ground truth result is around `0.
 
 ## Software Hardware Co-Design
 
+
+
 ### Compute the pearson correlation 
 
 We provide a framework to evaluate which compiler passes are important for the hardware performance counter as well as the end-to-end latency.
@@ -86,6 +88,13 @@ Please see the figure `heatmap-Speedup.png` in `figures`:
 ![heat-map-speedup](figures/gem5-cache-size.png)
 
 You can increase the threshold to filter out compiler pass features.
+
+
+### Predict the benchmark's sensitivity to cache size according to perf data
+```shell
+python3 predict_gem5_sensitive.py
+```
+
 
 
 ### Run gem5 simulation
@@ -110,4 +119,3 @@ We can also get the latency vs issue-width :
 ![gem5-issue-width-cbench](figures/gem5-issue-width.png)
 
 
-### Predict the 
