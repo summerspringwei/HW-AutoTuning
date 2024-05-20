@@ -186,7 +186,7 @@ def prepare_cbench_cache_dataset(
     return features, labels
 
 
-def xgboost_predict(X: np.ndarray, y: np.ndarray, test_size: float = 42):
+def xgboost_predict(X: np.ndarray, y: np.ndarray, test_size: float = 0.2):
     """Train and Predict the cache sensitive using XGBoost classifier
     
     Parameters:
@@ -204,7 +204,7 @@ def xgboost_predict(X: np.ndarray, y: np.ndarray, test_size: float = 42):
     logger.info(f"Get {len(X)} training records")
     X_train, X_test, y_train, y_test = train_test_split(X,
                                                         y,
-                                                        test_size=classification_rep,
+                                                        test_size=test_size,
                                                         random_state=42)
     # Create an instance of XGBClassifier
     xgb_model = xgb.XGBClassifier(n_estimators=100,

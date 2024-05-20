@@ -95,8 +95,6 @@ You can increase the threshold to filter out compiler pass features.
 python3 predict_gem5_sensitive.py
 ```
 
-
-
 ### Run gem5 simulation
 
 We provide a framework to analyze how the micro architecture design choice will affect the final performance.
@@ -113,7 +111,7 @@ we can show the how the latency changes with the parameters for all the benchmar
 python3 draw_gem5.py
 ```
 We can get the latency vs the cache size:
-![gem5-cache-size-cbench](figures/gem5-issue-width.png)
+![gem5-cache-size-cbench](figures/gem5-cache-size.png)
 
 We can also get the latency vs issue-width :
 ![gem5-issue-width-cbench](figures/gem5-issue-width.png)
