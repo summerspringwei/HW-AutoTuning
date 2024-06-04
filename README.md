@@ -26,6 +26,13 @@ Then,
 Please see the following link to build Gem5 for arm simulation:
 [building-gem5](https://www.gem5.org/documentation/general_docs/building).
 
+To simulate Arm on X86 machine, you need the `arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-linux-gnu`.
+Down load and untar it:
+```shell
+wget https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
+tar -xvf arm-gnu-toolchain-13.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
+```
+
 
 ### Install cBench
 
@@ -36,6 +43,9 @@ git clone https://github.com/summerspringwei/cBench_v1.1_Arm.git
 ```
 
 <!-- ## How to install -->
+## Configuration for the Pre-requrements
+You must modify the variable `cbench_dir` to the path to the downloaded `cBench_v1.1_Arm`.
+Then, you must modify variables `gem5_binary`, `scripts_path`, `toolchain_path`, `cbench_home` and `cbench_log_dir` to the corresponding directory.
 
 
 ## Cost model
