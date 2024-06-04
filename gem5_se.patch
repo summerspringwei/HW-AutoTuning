@@ -1,0 +1,53 @@
+diff --git a/configs/deprecated/example/se.py b/configs/deprecated/example/se.py
+index afdb82489d..bcca79d700 100644
+--- a/configs/deprecated/example/se.py
++++ b/configs/deprecated/example/se.py
+@@ -130,9 +130,27 @@ warn(
+     " gem5."
+ )
+ 
++
++def addCPUOptions(parser):
++    # Benchmark options
++    parser.add_argument(
++        "--issuewidth",
++        default=8,
++        type=int,
++        help="The Issue width",
++    )
++    parser.add_argument(
++        "--btbentries",
++        default=4096,
++        type=int,
++        help="The number of BTB entries",
++    )
++
++
+ parser = argparse.ArgumentParser()
+ Options.addCommonOptions(parser)
+ Options.addSEOptions(parser)
++addCPUOptions(parser)
+ 
+ if "--ruby" in sys.argv:
+     Ruby.define_options(parser)
+@@ -141,7 +159,8 @@ args = parser.parse_args()
+ 
+ multiprocesses = []
+ numThreads = 1
+-
++# import pdb
++# pdb.set_trace()
+ if args.bench:
+     apps = args.bench.split("-")
+     if len(apps) != args.num_cpus:
+@@ -178,6 +197,10 @@ else:
+ 
+ (CPUClass, test_mem_mode, FutureClass) = Simulation.setCPUClass(args)
+ CPUClass.numThreads = numThreads
++CPUClass.issueWidth = args.issuewidth
++print("CPUClass.branchPred.btb.numEntries")
++print(CPUClass.branchPred.btb.numEntries)
++CPUClass.branchPred.btb.numEntries = 4096
+ 
+ # Check -- do not allow SMT with multiple CPUs
+ if args.smt and args.num_cpus > 1:

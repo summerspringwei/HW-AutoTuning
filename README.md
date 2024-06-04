@@ -9,7 +9,33 @@ the second is the framework for hardware design.
 * Gem5
 * cBench
 
-## How to install
+### Install Gem5
+
+First clone Gem5 from github and checkout the corresponding version:
+
+```shell
+git clone https://github.com/gem5/gem5.git
+git checkout e8bc4fc137a5a7e82b601432271a027b652ae69b
+```
+Then, you need to apply our modified patch file `gem5_se.patch` to the gem5:
+```shell
+cd path/to/gem5
+git apply path/to/HW-Autotuning/gem5_se.patch
+```
+Then, 
+Please see the following link to build Gem5 for arm simulation:
+[building-gem5](https://www.gem5.org/documentation/general_docs/building).
+
+
+### Install cBench
+
+We have built a cBench with arm toolchains, 
+you need to clone the cBench to you local machine if you want to run the cBench's simulation with Gem5:
+```shell
+git clone https://github.com/summerspringwei/cBench_v1.1_Arm.git
+```
+
+<!-- ## How to install -->
 
 
 ## Cost model
