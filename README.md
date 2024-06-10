@@ -62,10 +62,58 @@ python3 ranking_cost_model.py
 ```
 您将看到以下输出：
 ```
-INFO - 2024-04-19 21:09:32,223 - mlp_model.py:38 - 开始！
-INFO - 2024-04-19 21:09:37,527 - ranking_cost_model.py:62 - 训练特征形状：(48728, 198)
-/Users/xiachunwei/Software/anaconda3/lib/python3.11/site-packages/torch/optim/lr_scheduler.py:28: UserWarning: verbose参数已弃用。请使用get_last_lr()访问学习率。
+INFO - 2024-04-19 21:09:32,223 - mlp_model.py:38 - Start !
+INFO - 2024-04-19 21:09:37,527 - ranking_cost_model.py:62 - Feature shape for training: (48728, 198)
+/Users/xiachunwei/Software/anaconda3/lib/python3.11/site-packages/torch/optim/lr_scheduler.py:28: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
   warnings.warn("The verbose parameter is deprecated. Please use get_last_lr() "
-INFO - 2024-04-19 21:09:40,252 - mlp_model.py:708 - 训练大小：38728；测试大小：10000
-INFO - 2024-04-19 21:09:40,252 - mlp_model.py:712 - 周期：0
-INFO - 2024-04-19
+INFO - 2024-04-19 21:09:40,252 - mlp_model.py:708 - Training size: 38728; Testing size: 10000
+INFO - 2024-04-19 21:09:40,252 - mlp_model.py:712 - Epoch: 0
+INFO - 2024-04-19 21:09:40,377 - mlp_model.py:629 - Batch: 0, train loss: 3.414378
+INFO - 2024-04-19 21:09:42,839 - mlp_model.py:730 - Average test loss: 1.286543, top1 score: 0.882663, top5 score: 0.918474, top10 score: 0.934748
+INFO - 2024-04-19 21:09:42,844 - mlp_model.py:712 - Epoch: 1
+INFO - 2024-04-19 21:09:42,855 - mlp_model.py:629 - Batch: 0, train loss: 0.326352
+INFO - 2024-04-19 21:09:45,470 - mlp_model.py:730 - Average test loss: 1.300602, top1 score: 0.879198, top5 score: 0.917802, top10 score: 0.934217
+INFO - 2024-04-19 21:09:45,470 - mlp_model.py:712 - Epoch: 2
+INFO - 2024-04-19 21:09:45,479 - mlp_model.py:629 - Batch: 0, train loss: 0.187633
+INFO - 2024-04-19 21:09:48,163 - mlp_model.py:730 - Average test loss: 1.304941, top1 score: 0.881098, top5 score: 0.916606, top10 score: 0.935308
+```
+
+Top-1分数表明，最出色的真实结果约为预测结果的`0.88`。(越接近1，越好).
+
+
+## 软硬件协同设计
+### 计算皮尔逊相关系数
+我们提供了一个框架来评估哪些编译器过程对硬件性能计数器以及端到端延迟至关重要。
+对于缓存未命中率：
+```shell
+python3 ./pearson_relationship.py --label_type cache --threshold 0.2
+```
+请查看`figures`目录中的`heatmap-Cache-Miss-Rate.png`图：
+![heat-map-cache-miss](figures/heatmap-Cache-Miss-Rate.png)
+对于端到端延迟：
+```shell
+python3 ./pearson_relationship.py --label_type speedup --threshold 0.4
+```
+请查看`figures`目录中的`heatmap-Speedup.png`图：
+![heat-map-speedup](figures/gem5-cache-size.png)
+您可以增加阈值以过滤掉编译器过程特征。
+### 根据性能数据预测基准对缓存大小的敏感性
+```shell
+python3 predict_gem5_sensitive.py
+```
+### 运行gem5模拟
+我们提供了一个框架来分析微架构设计选择将如何影响最终性能。
+```shell
+python3 run_gem5.py
+```
+注意，运行模拟可能需要几个小时甚至几天的时间。模拟时间取决于CPU的性能。
+### 可视化模拟结果
+在收集了不同架构参数的模拟结果之后，
+我们可以展示所有基准测试的延迟如何随参数变化。
+```shell
+python3 draw_gem5.py
+```
+我们可以得到延迟与缓存大小的关系图：
+![gem5-cache-size-cbench](figures/gem5-cache-size.png)
+我们还可以得到延迟与发射宽度的关系图：
+![gem5-issue-width-cbench](figures/gem5-issue-width.png)
